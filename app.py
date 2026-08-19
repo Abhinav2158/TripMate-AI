@@ -8,13 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
-from backend import run_travel_agent, resume_travel_agent
-
-# This is kept from the original project to allow the existing synchronous
-# agent functions to call async MCP helpers inside FastAPI.
-import nest_asyncio
-
-nest_asyncio.apply()
+from backend import run_travel_agent_async, resume_travel_agent_async
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -24,7 +18,7 @@ app = FastAPI(
         "LangGraph Multi-Agent Travel Planner with Supervisor, Guardrails, "
         "Human-in-the-Loop, and FastAPI Frontend"
     ),
-    version="2.0.0",
+    version="2.1.0",
 )
 
 app.mount(
@@ -70,7 +64,7 @@ async def travel_planner(request_data: TravelRequest):
                 },
             )
 
-        result = run_travel_agent(
+        result = await run_travel_agent_async(
             user_input=user_message,
             thread_id=request_data.thread_id,
         )
@@ -107,7 +101,7 @@ async def approve_travel_plan(request_data: ApprovalRequest):
                 },
             )
 
-        result = resume_travel_agent(
+        result = await resume_travel_agent_async(
             thread_id=request_data.thread_id,
             approved=request_data.approved,
             feedback=request_data.feedback,
@@ -137,11 +131,13 @@ async def approve_travel_plan(request_data: ApprovalRequest):
 async def health_check():
     return {
         "status": "ok",
-        "message": "TripMate AI API is running",
+        "message": "TripMate AI API is running natively async",
         "features": [
             "supervisor_agent",
             "input_guardrail",
             "human_in_the_loop",
+            "parallel_fanout_execution",
+            "pydantic_structured_outputs",
         ],
     }
 

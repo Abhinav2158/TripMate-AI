@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TripMate AI — Plan your perfect trip with a multi-agent AI system powered by LangGraph, MCP, Groq, and real-time travel data.">
   <title>TripMate AI</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -16,12 +18,12 @@
   <main class="app-container">
     <section class="hero-section">
       <div class="badge">
-        ✈️ TripMate AI — LangGraph, MCP, Supervisor, Guardrails & HITL
+        ✈️ TripMate AI — Multi-Agent Travel Planner with Live Map & Voice Guide
       </div>
       <h1>Plan Your Perfect Trip with AI</h1>
       <p>
-        Search flights, discover hotels, check weather, assess your budget,
-        and review the AI-generated draft before the final itinerary is created.
+        Search flights, discover hostels & hotels, check live weather forecasts, assess your budget,
+        and explore interactive landmark maps with audio narration.
       </p>
     </section>
 
@@ -30,7 +32,7 @@
         <div>
           <h2>Where do you want to go?</h2>
           <p>
-            Example: Plan a complete 7 days Japan trip from Bangladesh under 2 lakhs.
+            Example: Plan a 3 days budget trip to Varanasi from Delhi with hostels and sightseeing.
           </p>
         </div>
         <div class="status-pill">
@@ -42,7 +44,7 @@
       <div class="input-area">
         <textarea
           id="userInput"
-          placeholder="Plan a complete 7 days Japan trip including flights, hotels and sightseeing under 2 lakhs..."
+          placeholder="Plan a complete 5 days Dubai trip including flights, hotels and sightseeing under $1500..."
         ></textarea>
         <button id="sendBtn" onclick="sendMessage()">
           <span id="btnText">Generate Draft</span>
@@ -51,17 +53,17 @@
       </div>
 
       <div class="quick-prompts">
-        <button onclick="setPrompt('Plan a complete 7 days Japan trip from Bangladesh including flights, hotels and sightseeing under 2 lakhs.')">
-          Japan Trip
+        <button onclick="setPrompt('Plan a 3 days budget trip to Varanasi from Delhi with hostels and sightseeing.')">
+          Varanasi Trip
         </button>
         <button onclick="setPrompt('Plan a 5 days Dubai trip from Dhaka with flights, hotels and sightseeing.')">
           Dubai Trip
         </button>
-        <button onclick="setPrompt('Plan a 7 days Thailand trip from Bangladesh with budget hotels and sightseeing.')">
-          Thailand Trip
+        <button onclick="setPrompt('Plan a 7 days Japan trip from Bangladesh including flights, hotels and sightseeing under 2 lakhs.')">
+          Japan Trip
         </button>
-        <button onclick="setPrompt('Give me all country flight info.')">
-          Global Flights
+        <button onclick="setPrompt('Plan a 4 days budget trip to Goa with beach hostels and water sports.')">
+          Goa Beaches
         </button>
       </div>
     </section>
@@ -70,12 +72,132 @@
       <div class="workflow-header">
         <div>
           <span class="eyebrow">Supervisor Agent</span>
-          <h2>Execution Plan</h2>
+          <h2>Agent Execution Plan</h2>
         </div>
         <span id="guardrailBadge" class="guardrail-badge">Guardrail passed</span>
       </div>
       <p id="supervisorReasoning" class="supervisor-reasoning"></p>
       <div id="agentChips" class="agent-chips"></div>
+    </section>
+
+    <section id="interactiveWidgetsSection" class="interactive-widgets hidden">
+      <!-- Live Map Widget -->
+      <div class="widget-card map-widget">
+        <div class="widget-header">
+          <div class="widget-title">
+            <span>🗺️</span>
+            <h3>Interactive Route & Distance Map</h3>
+          </div>
+          <span id="mapCityBadge" class="badge-pill">Locating...</span>
+        </div>
+        <div id="routeDistanceBar" class="route-distance-bar hidden">
+          <span id="routeDistanceText">🛣️ Calculating route...</span>
+        </div>
+        <div id="travelMap" class="map-box"></div>
+      </div>
+
+      <!-- Weather & Smart Packing Checklist -->
+      <div class="widget-card packing-widget">
+        <div class="widget-header">
+          <div class="widget-title">
+            <span>🎒</span>
+            <h3>Smart Packing Checklist</h3>
+          </div>
+          <span id="weatherSummaryBadge" class="badge-pill weather-pill">Checking Weather</span>
+        </div>
+        <div id="packingList" class="packing-grid"></div>
+      </div>
+
+        <!-- Visual Budget Breakdown Widget with Pie Chart & Group Splitter -->
+      <div class="widget-card budget-widget">
+        <div class="widget-header">
+          <div class="widget-title">
+            <span>📊</span>
+            <h3>Estimated Budget Allocation</h3>
+          </div>
+          <div class="budget-controls">
+            <div class="group-selector">
+              <label for="groupSelect">Travelers:</label>
+              <select id="groupSelect" onchange="updateGroupSize(this.value)">
+                <option value="1" selected>👤 1 (Solo)</option>
+                <option value="2">👥 2 (Duo)</option>
+                <option value="3">👨‍👩‍👧 3 (Small Group)</option>
+                <option value="4">👨‍👩‍👧‍👦 4 (Group)</option>
+                <option value="6">🚐 6+ (Large Group)</option>
+              </select>
+            </div>
+            <div class="currency-selector">
+              <label for="currencySelect">Currency:</label>
+              <select id="currencySelect" onchange="updateCurrency(this.value)">
+                <option value="INR">₹ INR</option>
+                <option value="USD" selected>$ USD</option>
+                <option value="EUR">€ EUR</option>
+                <option value="AED">د.إ AED</option>
+                <option value="GBP">£ GBP</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="budget-chart-layout">
+          <div class="pie-chart-wrapper">
+            <div class="pie-chart-box">
+              <svg id="budgetPieSvg" viewBox="0 0 200 200" class="budget-pie-svg"></svg>
+              <div class="pie-center-info">
+                <span class="pie-center-label">Est. Total</span>
+                <strong id="pieTotalValue" class="pie-center-amount">$800</strong>
+                <span id="piePerPersonValue" class="pie-per-person">($800 / person)</span>
+              </div>
+            </div>
+          </div>
+          <div id="budgetBars" class="budget-bars"></div>
+        </div>
+      </div>
+
+      <!-- Local Tourist Helper & Emergency Desk Widget -->
+      <div class="widget-card helper-widget">
+        <div class="widget-header">
+          <div class="widget-title">
+            <span>🆘</span>
+            <h3>Local Helper & Tourist Desk</h3>
+          </div>
+          <span id="helperCityBadge" class="badge-pill">Tourist Safety</span>
+        </div>
+        <div class="helper-content">
+          <div class="emergency-grid">
+            <div class="emergency-pill police">
+              <span class="em-icon">👮</span>
+              <div>
+                <strong>Police SOS</strong>
+                <span id="policeNum">112</span>
+              </div>
+            </div>
+            <div class="emergency-pill ambulance">
+              <span class="em-icon">🚑</span>
+              <div>
+                <strong>Medical SOS</strong>
+                <span id="ambulanceNum">108</span>
+              </div>
+            </div>
+            <div class="emergency-pill helpline">
+              <span class="em-icon">📞</span>
+              <div>
+                <strong>Tourist Helpline</strong>
+                <span id="touristNum">1363 (24x7)</span>
+              </div>
+            </div>
+          </div>
+          <div class="helper-subsections">
+            <div class="transit-tips-box">
+              <h4>🚕 Local Transport & Auto Guide</h4>
+              <p id="localTransportTip">Use pre-paid taxi counters or ride-hailing apps. For local autos/tuk-tuks, confirm meter or agree on fare before boarding.</p>
+            </div>
+            <div class="phrasebook-box">
+              <h4>🗣️ Useful Local Phrases</h4>
+              <div id="localPhrasesGrid" class="phrases-grid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="resultSection" class="result-section hidden">
@@ -85,9 +207,23 @@
           <p id="threadInfo">Thread ID: -</p>
         </div>
         <div class="result-actions">
+          <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">
+            <span id="voiceIcon">🔊</span>
+            <span id="voiceText">Listen</span>
+          </button>
           <button class="copy-btn" onclick="copyResult()">Copy</button>
           <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
         </div>
+      </div>
+
+      <!-- Interactive Day-by-Day Visual Timeline Tabs -->
+      <div id="dayTimelineContainer" class="day-timeline-container hidden">
+        <div class="timeline-header">
+          <span class="eyebrow">Visual Day Schedule</span>
+          <h3>📅 Interactive Day-by-Day Timeline</h3>
+        </div>
+        <div id="dayTabs" class="day-tabs"></div>
+        <div id="dayCards" class="day-cards"></div>
       </div>
 
       <div id="pdfContent" class="pdf-content">
@@ -108,7 +244,7 @@
         <textarea
           id="approvalFeedback"
           class="feedback-input"
-          placeholder="Add revision feedback, for example: reduce the hotel cost and add one free day..."
+          placeholder="Add revision feedback, for example: reduce hotel costs, add a boat ride, or make Day 2 lighter on walking..."
         ></textarea>
 
         <div class="approval-actions">
@@ -126,9 +262,10 @@
   </main>
 
   <footer>
-    Built with FastAPI, LangGraph, Groq, PostgreSQL, Tavily, AviationStack and MCP
+    Built with FastAPI, LangGraph, Groq, Leaflet, Open-Meteo, OpenStreetMap and MCP
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="/static/script.js"></script>
