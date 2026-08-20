@@ -286,7 +286,7 @@ async function sendMessage() {
 async function submitApproval(approved) {
   hideError();
 
-  if (!currentThreadId || !waitingForApproval) {
+  if (!currentThreadId) {
     showError("There is no draft waiting for approval.");
     return;
   }
@@ -318,15 +318,41 @@ async function submitApproval(approved) {
     const data = await response.json();
 
     if (!response.ok || !data.success) {
-      throw new Error(data.error || "Could not resume the travel workflow.");
+      throw new Error(data.error || "Could not process approval.");
     }
 
     latestTripData = data;
     showWorkflow(data);
-    hideApproval();
-    showResult(data.answer, data.thread_id, false);
-    currentThreadId = null;
-    localStorage.removeItem("travel_thread_id");
+
+    const planAnswer = data.final_response || data.itinerary || data.answer || "";
+
+    if (approved) {
+      // User approved: finalize and hide HITL box
+      hideApproval();
+      showResult(planAnswer, data.thread_id, false);
+      const resultTitle = document.getElementById("resultTitle");
+      if (resultTitle) resultTitle.textContent = "Your Final AI Travel Plan (Approved)";
+      currentThreadId = null;
+      localStorage.removeItem("travel_thread_id");
+    } else {
+      // User requested revision: display newly regenerated itinerary and keep HITL box active
+      showResult(planAnswer, data.thread_id, true);
+      const resultTitle = document.getElementById("resultTitle");
+      if (resultTitle) resultTitle.textContent = "Revised Draft Itinerary (Review Below)";
+      
+      const approvalRequest = document.getElementById("approvalRequest");
+      if (approvalRequest) {
+        approvalRequest.innerHTML = `✨ <b>Revised based on your feedback:</b> <span style="color:#60a5fa;">"${feedback}"</span><br>Approve this updated plan or enter additional feedback below.`;
+      }
+      
+      if (feedbackInput) feedbackInput.value = "";
+      waitingForApproval = true;
+      const section = document.getElementById("approvalSection");
+      if (section) {
+        section.classList.remove("hidden");
+        section.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
   } catch (error) {
     showError(error.message);
   } finally {

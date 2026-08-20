@@ -51,22 +51,59 @@ logger = logging.getLogger("TripMateBackend")
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
-if not GROQ_API_KEY:
-    logger.warning("GROQ_API_KEY is missing from environment. API calls will fail unless configured.")
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
 
-# Multi-model resiliency: Primary 120b + Fallback 20b
+# Multi-provider resiliency: Groq 120b -> Groq 20b -> Mistral AI
 _primary_llm = ChatGroq(
     model=GROQ_MODEL,
     api_key=GROQ_API_KEY or "dummy-key",
     temperature=0.3,
+    max_retries=0,
 )
 _backup_model = "openai/gpt-oss-20b" if GROQ_MODEL != "openai/gpt-oss-20b" else "openai/gpt-oss-120b"
 _fallback_llm = ChatGroq(
     model=_backup_model,
     api_key=GROQ_API_KEY or "dummy-key",
     temperature=0.3,
+    max_retries=0,
 )
-llm = _primary_llm.with_fallbacks([_fallback_llm])
+
+_llm_fallbacks = [_fallback_llm]
+if MISTRAL_API_KEY:
+    try:
+        from langchain_mistralai import ChatMistralAI
+        _mistral_llm = ChatMistralAI(model="mistral-small-latest", api_key=MISTRAL_API_KEY, temperature=0.3)
+        _llm_fallbacks.append(_mistral_llm)
+    except Exception as e:
+        logger.warning(f"Mistral setup notice: {e}")
+
+llm = _primary_llm.with_fallbacks(_llm_fallbacks)
+
+
+def get_structured_llm(schema):
+    """Builds a multi-provider fallback chain for structured JSON tool calls."""
+    chains = []
+    try:
+        chains.append(_primary_llm.with_structured_output(schema))
+    except Exception:
+        pass
+    try:
+        chains.append(_fallback_llm.with_structured_output(schema))
+    except Exception:
+        pass
+    if MISTRAL_API_KEY:
+        try:
+            from langchain_mistralai import ChatMistralAI
+            m = ChatMistralAI(model="mistral-small-latest", api_key=MISTRAL_API_KEY, temperature=0.1)
+            chains.append(m.with_structured_output(schema))
+        except Exception:
+            pass
+
+    if not chains:
+        return _primary_llm.with_structured_output(schema)
+    if len(chains) == 1:
+        return chains[0]
+    return chains[0].with_fallbacks(chains[1:])
 
 
 # =========================
@@ -154,7 +191,7 @@ async def fetch_web_scraped_alternative_candidates(explicit: str, days: int, bud
     """
 
     try:
-        disc_llm = llm.with_structured_output(DynamicDiscoveryResult)
+        disc_llm = get_structured_llm(DynamicDiscoveryResult)
         res: DynamicDiscoveryResult = await disc_llm.ainvoke([
             SystemMessage(content="You are a travel research engine extracting 2 real alternative destinations (with actual geographic city/state names) from live web search results."),
             HumanMessage(content=prompt)
@@ -278,7 +315,7 @@ async def dynamic_discover_candidates(profile: UserProfile, query: str) -> List[
     """
 
     try:
-        disc_llm = llm.with_structured_output(DynamicDiscoveryResult)
+        disc_llm = get_structured_llm(DynamicDiscoveryResult)
         res: DynamicDiscoveryResult = await disc_llm.ainvoke([
             SystemMessage(content="You are an AI travel research engine generating 3 concise, factual destination profiles (1 target + 2 alternatives) backed by web research."),
             HumanMessage(content=discovery_prompt)
@@ -382,7 +419,7 @@ async def supervisor_agent(state: TravelState) -> dict[str, Any]:
         """
 
         try:
-            guardrail_llm = llm.with_structured_output(GuardrailResult)
+            guardrail_llm = get_structured_llm(GuardrailResult)
             guardrail_res: GuardrailResult = await guardrail_llm.ainvoke(
                 [
                     SystemMessage(content="You are an input safety guardrail for a travel planning platform. Allow any travel-related request."),
@@ -442,7 +479,7 @@ async def supervisor_agent(state: TravelState) -> dict[str, Any]:
 
     user_profile = UserProfile()
     try:
-        profile_llm = llm.with_structured_output(UserProfile)
+        profile_llm = get_structured_llm(UserProfile)
         user_profile_res: UserProfile = await profile_llm.ainvoke(
             [
                 SystemMessage(content="You are an expert NLP travel preference parser. Set explicit_destination ONLY for real named geographic locations (cities, countries, islands). NEVER set it to trip themes like 'Honeymoon', 'Adventure', 'Romantic', 'Beach', 'Solo', 'Budget' — those are trip types, not destinations."),
@@ -852,30 +889,37 @@ async def final_agent(state: TravelState) -> dict[str, Any]:
     if is_approved:
         review_instruction = "The user approved the draft itinerary. Polish into the final, complete travel plan."
     else:
-        review_instruction = f"THE USER REQUESTED REVISIONS: '{feedback}'. You MUST incorporate this feedback directly to modify the activities, schedule, budget, or transit accordingly."
+        review_instruction = (
+            f"THE USER REQUESTED REVISIONS: '{feedback}'. "
+            f"You MUST completely update and customize the itinerary to directly fulfill their requested changes "
+            f"(e.g., adjust the schedule, add/remove activities, update transit, modify pace or budget). "
+            f"In the overview, explicitly note the changes made in response to their feedback."
+        )
 
     user_q = state.get("user_query") or state.get("trip_constraints", {}).get("destination", "Custom Travel Query")
 
     final_prompt = f"""
-    Generate the final travel plan.
-    User Query: {user_q}
-    Revision / Approval Context: {review_instruction}
-    Draft Plan: {state.get('itinerary', '')[:1500]}
-    Transit: {state.get('flight_results', '')[:300]}
-    Hotels: {state.get('hotel_results', '')[:300]}
+    Generate the updated travel plan.
+    User Request: {user_q}
+    Revision / Approval Instructions: {review_instruction}
+    Original Draft Plan:
+    {state.get('itinerary', '')}
 
-    Keep the output crisp, well-structured, and non-redundant:
-    1. Trip Summary (Note any revisions applied if feedback was given)
-    2. Final Day-by-Day Schedule (Incorporating user's feedback)
-    3. Transit & Accommodation Details
-    4. Practical Packing & Local Tips
+    Transit Context: {state.get('flight_results', '')[:500]}
+    Accommodation Context: {state.get('hotel_results', '')[:500]}
+
+    Provide the complete, updated itinerary:
+    1. Trip Overview (Highlight adjustments made based on feedback)
+    2. Complete Day-by-Day Schedule (Fully revised according to feedback)
+    3. Recommended Transit & Accommodation
+    4. Practical Packing & Local Advice
 
     CRITICAL: Every sentence and bullet point MUST end completely with proper end punctuation. Never leave an incomplete line.
     """
 
     try:
         res = await llm.ainvoke([
-            SystemMessage(content="You are a professional travel booking advisor. Produce clean, well-organized travel documents that strictly honor user feedback. Ensure all sentences are complete."),
+            SystemMessage(content="You are an expert travel consultant updating and finalizing a travel itinerary based on user feedback. Ensure all sentences and bullets are complete and accurately reflect the user's feedback."),
             HumanMessage(content=final_prompt)
         ])
         final_text = clean_incomplete_trailing_sentences(str(res.content))
@@ -885,6 +929,7 @@ async def final_agent(state: TravelState) -> dict[str, Any]:
 
     return {
         "final_response": final_text,
+        "itinerary": final_text,
         "messages": [AIMessage(content=final_text)],
         "llm_calls": 1,
     }
