@@ -217,27 +217,38 @@ async def dynamic_discover_candidates(profile: UserProfile, query: str) -> List[
     days = profile.hard_constraints.max_available_days or 4
     budget = profile.hard_constraints.max_budget_inr or 35000.0
 
-    # 1. Scrape web research via Tavily for live alternative travel destinations
+    # 1. Scrape web research via Tavily for live destination discovery
     tavily_web_context = ""
     try:
-        search_query = f"top alternative travel spots to {explicit or query} budget hostels travel guide"
+        # For theme-based queries (no explicit destination), search by trip theme for best destinations
+        if explicit:
+            search_query = f"best travel destinations near {explicit} budget travel guide top picks"
+        else:
+            search_query = f"best destinations for {query} top travel spots India international"
         tavily_web_context = await tavily_mcp_search(search_query)
-        logger.info(f"Scraped live web research via Tavily for alternatives: {search_query[:50]}...")
+        logger.info(f"Scraped live web research via Tavily for alternatives: {search_query[:60]}...")
     except Exception as exc:
         logger.warning(f"Tavily web scraping for alternatives error: {exc}")
+
+    # Determine if this is a theme-based query or explicit destination query
+    is_theme_query = not explicit
+    target_instruction = (
+        f"The user wants to visit: {explicit}. Generate 1 dossier for {explicit} + 2 distinct alternatives."
+        if explicit else
+        f"The user has NOT specified a destination. Based on their trip theme '{query}' and the web research, "
+        f"suggest the TOP 3 best REAL destinations (actual city/country names) that perfectly match their request. "
+        f"For example: 'honeymoon trip for a week' → suggest real romantic destinations like Udaipur, Andaman, Maldives, Bali, etc."
+    )
 
     candidates = []
     discovery_prompt = f"""
     Travel Query: "{query}"
-    Target: {explicit or 'Discover best fits'}
     Origin: {origin}, Duration: {days} days, Budget: ₹{int(budget):,}
     Live Web Research (Tavily): {str(tavily_web_context)[:1000]}
 
-    Using the live web research and destination knowledge, generate 3 distinct destination dossiers:
-    1. The target destination requested: {explicit or 'Best overall destination'}
-    2. Viable Alternative Candidate 1 (Similar vibe/geography, lower cost or different pacing)
-    3. Viable Alternative Candidate 2 (Distinct travel alternative)
+    {target_instruction}
 
+    Generate exactly 3 destination dossiers with REAL geographic place names (cities, regions, countries).
     Include for each: id, name, country, region, min_days, base_cost_per_day_inr, category_tags, advantages (2-3 items), disadvantages (1-2 items), who_should_not_visit.
     """
 
@@ -393,11 +404,12 @@ async def supervisor_agent(state: TravelState) -> dict[str, Any]:
     
     Guidelines:
     - max_budget_inr: parse budget (e.g. 40k -> 40000, 2 lakhs -> 200000, $1500 -> 125000). Default 80000 if not specified.
-    - max_available_days: integer days (e.g. 5 days -> 5). Default 5.
+    - max_available_days: integer days (e.g. 5 days -> 5, a week -> 7). Default 5.
     - travel_month: month name (e.g. October, January, June). Default "October".
     - origin_city: departure city if mentioned.
-    - explicit_destination: if user explicitly named a specific place (e.g. "Varanasi", "Dubai", "Goa").
+    - explicit_destination: ONLY set this if the user explicitly names a REAL geographic place (city, country, region) like "Varanasi", "Dubai", "Goa", "Andaman", "Manali". Do NOT set this to generic trip types like "Honeymoon", "Adventure", "Romantic", "Beach", "Budget", "Solo" — leave it as null/empty if no real place is mentioned.
     - Soft weights (0.0 to 1.0): nature_weight, adventure_weight, culture_weight, nightlife_weight, relaxation_weight, crowd_aversion, risk_tolerance.
+    - For romantic/honeymoon queries: set relaxation_weight=0.9, culture_weight=0.7, adventure_weight=0.4.
 
     User request:
     {query}
@@ -408,7 +420,7 @@ async def supervisor_agent(state: TravelState) -> dict[str, Any]:
         profile_llm = llm.with_structured_output(UserProfile)
         user_profile_res: UserProfile = await profile_llm.ainvoke(
             [
-                SystemMessage(content="You are an expert NLP travel preference parser. If user explicitly names a place like 'Varanasi', 'Goa', 'Dubai', 'Manali', set explicit_destination accordingly."),
+                SystemMessage(content="You are an expert NLP travel preference parser. Set explicit_destination ONLY for real named geographic locations (cities, countries, islands). NEVER set it to trip themes like 'Honeymoon', 'Adventure', 'Romantic', 'Beach', 'Solo', 'Budget' — those are trip types, not destinations."),
                 HumanMessage(content=profile_prompt),
             ]
         )
@@ -452,15 +464,26 @@ async def supervisor_agent(state: TravelState) -> dict[str, Any]:
             extracted_summary=f"Priced under ₹{int(budget):,}, {days} days duration."
         )
 
-    # Robust explicit destination detection fallback
+    # Robust explicit destination detection fallback — with broad blocklist of trip-type words
     import re
+    NON_DESTINATION_WORDS = {
+        "budget", "days", "day", "hostels", "hostel", "flight", "flights", "sightseeing",
+        "beach", "honeymoon", "romantic", "adventure", "solo", "couple", "family", "group",
+        "backpacking", "luxury", "budget", "cheap", "affordable", "scenic", "relaxing",
+        "fun", "trip", "tour", "travel", "vacation", "holiday", "week", "weekend",
+        "plan", "planning", "itinerary", "package", "getaway", "escape", "exciting",
+        "unique", "cultural", "spiritual", "religious", "historic", "heritage", "nature",
+        "mountain", "hill", "lake", "river", "forest", "desert", "island", "coastal"
+    }
     if not user_profile.hard_constraints.explicit_destination:
-        dest_match = re.search(r'\b(?:to|visit|explore|trip for|trip to)\s+([A-Za-z\s]+?)(?:\s+(?:from|for|with|under|in|by|including|\d+)|$|[.,!?])', query, re.I)
-        if not dest_match:
-            dest_match = re.search(r'\b([A-Za-z]{3,})\s+trip\b', query, re.I)
+        dest_match = re.search(
+            r'\b(?:to|visit|explore|trip to|going to|travel to)\s+([A-Za-z][A-Za-z\s]{2,25}?)'
+            r'(?:\s+(?:from|for|with|under|in|by|including|on a|\d+)|$|[.,!?])',
+            query, re.I
+        )
         if dest_match:
             cand = dest_match.group(1).strip().title()
-            if cand.lower() not in ["budget", "days", "hostels", "flight", "sightseeing", "beach"]:
+            if cand.lower() not in NON_DESTINATION_WORDS and len(cand) > 3:
                 user_profile.hard_constraints.explicit_destination = cand
 
     # If query mentions "budget" or "hostels" but no exact number, calibrate budget limit realistically
