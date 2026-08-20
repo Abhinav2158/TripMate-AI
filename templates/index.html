@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="TripMate AI — Plan your perfect trip with a multi-agent AI system powered by LangGraph, MCP, Groq, and real-time travel data.">
   <title>TripMate AI</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;750;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -18,21 +20,22 @@
   <main class="app-container">
     <section class="hero-section">
       <div class="badge">
-        ✈️ TripMate AI — Multi-Agent Travel Planner with Live Map & Voice Guide
+        ✈️ TripMate AI — LangGraph, MCP, Supervisor, Guardrails & HITL
       </div>
       <h1>Plan Your Perfect Trip with AI</h1>
       <p>
-        Search flights, discover hostels & hotels, check live weather forecasts, assess your budget,
-        and explore interactive landmark maps with audio narration.
+        Search flights, discover hotels, check weather, assess your budget,
+        and review the AI-generated draft before the final itinerary is created.
       </p>
     </section>
 
+    <!-- Main Planner Card with Original Header & Side-by-Side Input Layout -->
     <section class="planner-card">
       <div class="card-header">
         <div>
           <h2>Where do you want to go?</h2>
           <p>
-            Example: Plan a 3 days budget trip to Varanasi from Delhi with hostels and sightseeing.
+            Example: Plan a 3 days budget trip to Varanasi from Delhi with trains, hostels and sightseeing.
           </p>
         </div>
         <div class="status-pill">
@@ -44,7 +47,7 @@
       <div class="input-area">
         <textarea
           id="userInput"
-          placeholder="Plan a complete 5 days Dubai trip including flights, hotels and sightseeing under $1500..."
+          placeholder="Example: Plan a 3 days budget trip to Varanasi from Delhi with trains, hostels and sightseeing..."
         ></textarea>
         <button id="sendBtn" onclick="sendMessage()">
           <span id="btnText">Generate Draft</span>
@@ -53,21 +56,22 @@
       </div>
 
       <div class="quick-prompts">
-        <button onclick="setPrompt('Plan a 3 days budget trip to Varanasi from Delhi with hostels and sightseeing.')">
+        <button onclick="setPrompt('Plan a 3 days budget trip to Varanasi from Delhi with trains, hostels and sightseeing.')">
           Varanasi Trip
         </button>
-        <button onclick="setPrompt('Plan a 5 days Dubai trip from Dhaka with flights, hotels and sightseeing.')">
+        <button onclick="setPrompt('Plan a 5 days Dubai trip from Delhi with flights, hotels and sightseeing.')">
           Dubai Trip
         </button>
-        <button onclick="setPrompt('Plan a 7 days Japan trip from Bangladesh including flights, hotels and sightseeing under 2 lakhs.')">
-          Japan Trip
+        <button onclick="setPrompt('Plan a 4 days budget trip to Rishikesh with rafting and river view stays.')">
+          Rishikesh Trip
         </button>
-        <button onclick="setPrompt('Plan a 4 days budget trip to Goa with beach hostels and water sports.')">
+        <button onclick="setPrompt('Plan a 4 days trip to Goa with beach hostels and water sports.')">
           Goa Beaches
         </button>
       </div>
     </section>
 
+    <!-- Execution Plan & Supervisor Agent -->
     <section id="workflowSection" class="workflow-section hidden">
       <div class="workflow-header">
         <div>
@@ -80,189 +84,273 @@
       <div id="agentChips" class="agent-chips"></div>
     </section>
 
-    <section id="interactiveWidgetsSection" class="interactive-widgets hidden">
-      <!-- Live Map Widget -->
-      <div class="widget-card map-widget">
-        <div class="widget-header">
-          <div class="widget-title">
-            <span>🗺️</span>
-            <h3>Interactive Route & Distance Map</h3>
-          </div>
-          <span id="mapCityBadge" class="badge-pill">Locating...</span>
-        </div>
-        <div id="routeDistanceBar" class="route-distance-bar hidden">
-          <span id="routeDistanceText">🛣️ Calculating route...</span>
-        </div>
-        <div id="travelMap" class="map-box"></div>
-      </div>
+    <!-- 3 Section Navigation Tabs -->
+    <nav id="sectionNavTabs" class="section-nav-tabs hidden">
+      <button id="tabBtnItinerary" class="tab-nav-btn active" onclick="switchSectionTab('itinerary')">
+        <span>📋</span> Trip Overview
+      </button>
+      <button id="tabBtnRecs" class="tab-nav-btn" onclick="switchSectionTab('recommendations')">
+        <span>🎯</span> AI Recommendations
+      </button>
+      <button id="tabBtnTools" class="tab-nav-btn" onclick="switchSectionTab('tools')">
+        <span>🗺️</span> Maps & Tools
+      </button>
+      <button id="tabBtnAll" class="tab-nav-btn view-all-btn" onclick="switchSectionTab('all')">
+        <span>👁️</span> View All
+      </button>
+    </nav>
 
-      <!-- Weather & Smart Packing Checklist -->
-      <div class="widget-card packing-widget">
-        <div class="widget-header">
-          <div class="widget-title">
-            <span>🎒</span>
-            <h3>Smart Packing Checklist</h3>
+    <!-- SECTION 1: Trip Overview & Itinerary -->
+    <div id="tabContentItinerary" class="tab-content">
+      <!-- Main Result / Itinerary Card -->
+      <section id="resultSection" class="result-section hidden">
+        <div class="result-header">
+          <div>
+            <h2 id="resultTitle">Your AI Travel Plan</h2>
+            <p id="threadInfo">Thread ID: -</p>
           </div>
-          <span id="weatherSummaryBadge" class="badge-pill weather-pill">Checking Weather</span>
+          <div class="result-actions">
+            <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">
+              <span id="voiceIcon">🔊</span>
+              <span id="voiceText">Listen</span>
+            </button>
+            <button class="copy-btn" onclick="copyResult()">Copy</button>
+            <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+          </div>
         </div>
-        <div id="packingList" class="packing-grid"></div>
-      </div>
 
-        <!-- Visual Budget Breakdown Widget with Pie Chart & Group Splitter -->
-      <div class="widget-card budget-widget">
-        <div class="widget-header">
-          <div class="widget-title">
-            <span>📊</span>
-            <h3>Estimated Budget Allocation</h3>
-          </div>
-          <div class="budget-controls">
-            <div class="group-selector">
-              <label for="groupSelect">Travelers:</label>
-              <select id="groupSelect" onchange="updateGroupSize(this.value)">
-                <option value="1" selected>👤 1 (Solo)</option>
-                <option value="2">👥 2 (Duo)</option>
-                <option value="3">👨‍👩‍👧 3 (Small Group)</option>
-                <option value="4">👨‍👩‍👧‍👦 4 (Group)</option>
-                <option value="6">🚐 6+ (Large Group)</option>
-              </select>
-            </div>
-            <div class="currency-selector">
-              <label for="currencySelect">Currency:</label>
-              <select id="currencySelect" onchange="updateCurrency(this.value)">
-                <option value="INR">₹ INR</option>
-                <option value="USD" selected>$ USD</option>
-                <option value="EUR">€ EUR</option>
-                <option value="AED">د.إ AED</option>
-                <option value="GBP">£ GBP</option>
-              </select>
-            </div>
+        <div id="pdfContent" class="pdf-content">
+          <h1 class="pdf-title">AI Travel Plan</h1>
+          <div id="resultBox" class="result-box"></div>
+        </div>
+      </section>
+
+      <!-- Human-in-the-Loop Review Box (Placed Below the Draft Itinerary) -->
+      <section id="approvalSection" class="approval-section hidden">
+        <div class="approval-icon">👤</div>
+        <div class="approval-content">
+          <span class="eyebrow">Human-in-the-Loop</span>
+          <h2>Review the draft itinerary</h2>
+          <p id="approvalRequest">
+            Approve the draft or provide feedback before the final plan is generated.
+          </p>
+
+          <textarea
+            id="approvalFeedback"
+            class="feedback-input"
+            placeholder="Add revision feedback, for example: reduce hotel costs, add a boat ride, or prefer sleeper train..."
+          ></textarea>
+
+          <div class="approval-actions">
+            <button id="approveBtn" class="approve-btn" onclick="submitApproval(true)">
+              Approve & Generate Final
+            </button>
+            <button id="reviseBtn" class="revise-btn" onclick="submitApproval(false)">
+              Revise Using Feedback
+            </button>
           </div>
         </div>
-        <div class="budget-chart-layout">
-          <div class="pie-chart-wrapper">
-            <div class="pie-chart-box">
-              <svg id="budgetPieSvg" viewBox="0 0 200 200" class="budget-pie-svg"></svg>
-              <div class="pie-center-info">
-                <span class="pie-center-label">Est. Total</span>
-                <strong id="pieTotalValue" class="pie-center-amount">$800</strong>
-                <span id="piePerPersonValue" class="pie-per-person">($800 / person)</span>
+      </section>
+    </div>
+
+    <!-- SECTION 2: AI Recommendations -->
+    <div id="tabContentRecs" class="tab-content hidden">
+      <section id="decisionSection" class="decision-section hidden">
+        <div class="decision-card">
+          <div class="decision-header">
+            <div class="decision-title-group">
+              <span class="eyebrow">Multi-Criteria Decision Engine</span>
+              <h2 id="destName">Destination Name</h2>
+              <div class="decision-badges">
+                <span id="destCost" class="cost-badge">Est: ₹6,500 - ₹9,000</span>
               </div>
             </div>
           </div>
-          <div id="budgetBars" class="budget-bars"></div>
-        </div>
-      </div>
 
-      <!-- Local Tourist Helper & Emergency Desk Widget -->
-      <div class="widget-card helper-widget">
-        <div class="widget-header">
-          <div class="widget-title">
-            <span>🆘</span>
-            <h3>Local Helper & Tourist Desk</h3>
+          <div class="decision-block">
+            <h4 class="block-heading">✨ Key Highlights & Experience</h4>
+            <ul id="destProsList" class="recs-list"></ul>
           </div>
-          <span id="helperCityBadge" class="badge-pill">Tourist Safety</span>
-        </div>
-        <div class="helper-content">
-          <div class="emergency-grid">
-            <div class="emergency-pill police">
-              <span class="em-icon">👮</span>
-              <div>
-                <strong>Police SOS</strong>
-                <span id="policeNum">112</span>
-              </div>
-            </div>
-            <div class="emergency-pill ambulance">
-              <span class="em-icon">🚑</span>
-              <div>
-                <strong>Medical SOS</strong>
-                <span id="ambulanceNum">108</span>
-              </div>
-            </div>
-            <div class="emergency-pill helpline">
-              <span class="em-icon">📞</span>
-              <div>
-                <strong>Tourist Helpline</strong>
-                <span id="touristNum">1363 (24x7)</span>
-              </div>
+
+          <div class="decision-block">
+            <h4 class="block-heading">⚠️ Critic Analysis & Trade-offs</h4>
+            <ul id="destConsList" class="recs-list cons-list"></ul>
+          </div>
+
+          <div id="antiPersonaBox" class="anti-persona-box hidden">
+            <div class="anti-persona-icon">🛡️</div>
+            <div class="anti-persona-content">
+              <strong>Persona Fit Notice</strong>
+              <p id="antiPersonaText"></p>
             </div>
           </div>
-          <div class="helper-subsections">
-            <div class="transit-tips-box">
-              <h4>🚕 Local Transport & Auto Guide</h4>
-              <p id="localTransportTip">Use pre-paid taxi counters or ride-hailing apps. For local autos/tuk-tuks, confirm meter or agree on fare before boarding.</p>
+
+          <div id="alternativesSection" class="alternatives-section">
+            <h4 class="block-heading">🔄 Evaluated Alternatives</h4>
+            <div id="alternativesGrid" class="alternatives-grid"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 3: Maps & Tools -->
+    <div id="tabContentTools" class="tab-content hidden">
+      <section id="interactiveWidgetsSection" class="interactive-widgets">
+        <!-- Live Route & Distance Map -->
+        <div class="widget-card map-widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span>🗺️</span>
+              <h3>Interactive Route & Distance Map</h3>
             </div>
-            <div class="phrasebook-box">
-              <h4>🗣️ Useful Local Phrases</h4>
-              <div id="localPhrasesGrid" class="phrases-grid"></div>
+            <span id="mapCityBadge" class="badge-pill">Locating...</span>
+          </div>
+          <div id="routeDistanceBar" class="route-distance-bar hidden">
+            <span id="routeDistanceText">🛣️ Calculating route...</span>
+          </div>
+          <div id="travelMap" class="map-box"></div>
+        </div>
+
+        <!-- Dedicated Live Weather & 5-Day Forecast Widget -->
+        <div class="widget-card weather-widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span>🌦️</span>
+              <h3>Live Destination Weather & 5-Day Forecast</h3>
+            </div>
+            <span id="weatherLocationBadge" class="badge-pill weather-pill">Forecast</span>
+          </div>
+          <div class="weather-content-layout">
+            <div class="weather-current-box">
+              <div class="weather-main-stat">
+                <span id="weatherMainIcon" class="weather-big-icon">☀️</span>
+                <div>
+                  <h2 id="weatherMainTemp">28°C</h2>
+                  <span id="weatherMainCondition">Pleasant & Clear</span>
+                </div>
+              </div>
+              <div class="weather-metrics">
+                <div class="metric-item">
+                  <span class="metric-label">🌡️ High / Low</span>
+                  <strong id="weatherHighLow">31°C / 22°C</strong>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">💧 Conditions</span>
+                  <strong id="weatherHumidity">Good Visibility</strong>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">💨 Travel Comfort</span>
+                  <strong id="weatherComfort">Ideal for Sightseeing</strong>
+                </div>
+              </div>
+            </div>
+            <div class="forecast-strip-wrapper">
+              <h4 class="forecast-heading">📅 5-Day Daily Outlook</h4>
+              <div id="weatherForecastStrip" class="forecast-strip"></div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section id="resultSection" class="result-section hidden">
-      <div class="result-header">
-        <div>
-          <h2 id="resultTitle">Your AI Travel Plan</h2>
-          <p id="threadInfo">Thread ID: -</p>
+        <!-- Weather & Smart Packing Checklist -->
+        <div class="widget-card packing-widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span>🎒</span>
+              <h3>Smart Packing Checklist</h3>
+            </div>
+            <span id="weatherSummaryBadge" class="badge-pill weather-pill">Checking Weather</span>
+          </div>
+          <div id="packingList" class="packing-grid"></div>
         </div>
-        <div class="result-actions">
-          <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">
-            <span id="voiceIcon">🔊</span>
-            <span id="voiceText">Listen</span>
-          </button>
-          <button class="copy-btn" onclick="copyResult()">Copy</button>
-          <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+
+        <!-- Budget Breakdown Widget -->
+        <div class="widget-card budget-widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span>📊</span>
+              <h3>Estimated Budget Allocation</h3>
+            </div>
+            <div class="budget-controls">
+              <div class="currency-selector">
+                <label for="currencySelect">Currency:</label>
+                <select id="currencySelect" onchange="updateCurrency(this.value)">
+                  <option value="INR" selected>₹ INR</option>
+                  <option value="USD">$ USD</option>
+                  <option value="EUR">€ EUR</option>
+                  <option value="AED">د.إ AED</option>
+                  <option value="GBP">£ GBP</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="budget-chart-layout">
+            <div class="pie-chart-wrapper">
+              <div class="pie-chart-box">
+                <svg id="budgetPieSvg" viewBox="0 0 200 200" class="budget-pie-svg"></svg>
+                <div class="pie-center-info">
+                  <span class="pie-center-label">Est. Total Budget</span>
+                  <strong id="pieTotalValue" class="pie-center-amount">₹7,500</strong>
+                </div>
+              </div>
+            </div>
+            <div id="budgetBars" class="budget-bars"></div>
+          </div>
         </div>
-      </div>
 
-      <!-- Interactive Day-by-Day Visual Timeline Tabs -->
-      <div id="dayTimelineContainer" class="day-timeline-container hidden">
-        <div class="timeline-header">
-          <span class="eyebrow">Visual Day Schedule</span>
-          <h3>📅 Interactive Day-by-Day Timeline</h3>
+        <!-- Local Tourist Helper Desk -->
+        <div class="widget-card helper-widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span>🆘</span>
+              <h3>Local Helper & Tourist Desk</h3>
+            </div>
+            <span id="helperCityBadge" class="badge-pill">Tourist Safety</span>
+          </div>
+          <div class="helper-content">
+            <div class="emergency-grid">
+              <div class="emergency-pill police">
+                <span class="em-icon">👮</span>
+                <div>
+                  <strong>Police SOS</strong>
+                  <span id="policeNum">112</span>
+                </div>
+              </div>
+              <div class="emergency-pill ambulance">
+                <span class="em-icon">🚑</span>
+                <div>
+                  <strong>Medical SOS</strong>
+                  <span id="ambulanceNum">108</span>
+                </div>
+              </div>
+              <div class="emergency-pill helpline">
+                <span class="em-icon">📞</span>
+                <div>
+                  <strong>Tourist Helpline</strong>
+                  <span id="touristNum">1363 (24x7)</span>
+                </div>
+              </div>
+            </div>
+            <div class="helper-subsections">
+              <div class="transit-tips-box">
+                <h4>🚕 Local Transport & Auto Guide</h4>
+                <p id="localTransportTip">Use pre-paid taxi counters or ride-hailing apps. For local autos/tuk-tuks, confirm meter or agree on fare before boarding.</p>
+              </div>
+              <div class="phrasebook-box">
+                <h4>🗣️ Useful Local Phrases</h4>
+                <div id="localPhrasesGrid" class="phrases-grid"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div id="dayTabs" class="day-tabs"></div>
-        <div id="dayCards" class="day-cards"></div>
-      </div>
+      </section>
+    </div>
 
-      <div id="pdfContent" class="pdf-content">
-        <h1 class="pdf-title">AI Travel Plan</h1>
-        <div id="resultBox" class="result-box"></div>
-      </div>
-    </section>
-
-    <section id="approvalSection" class="approval-section hidden">
-      <div class="approval-icon">👤</div>
-      <div class="approval-content">
-        <span class="eyebrow">Human-in-the-Loop</span>
-        <h2>Review the draft itinerary</h2>
-        <p id="approvalRequest">
-          Approve the draft or provide feedback before the final plan is generated.
-        </p>
-
-        <textarea
-          id="approvalFeedback"
-          class="feedback-input"
-          placeholder="Add revision feedback, for example: reduce hotel costs, add a boat ride, or make Day 2 lighter on walking..."
-        ></textarea>
-
-        <div class="approval-actions">
-          <button id="approveBtn" class="approve-btn" onclick="submitApproval(true)">
-            Approve & Generate Final
-          </button>
-          <button id="reviseBtn" class="revise-btn" onclick="submitApproval(false)">
-            Revise Using Feedback
-          </button>
-        </div>
-      </div>
-    </section>
-
+    <!-- Error Box -->
     <section id="errorBox" class="error-box hidden"></section>
   </main>
 
   <footer>
-    Built with FastAPI, LangGraph, Groq, Leaflet, Open-Meteo, OpenStreetMap and MCP
+    Built with FastAPI, LangGraph, Groq, RailRadar, OpenStreetMap and MCP
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

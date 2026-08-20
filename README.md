@@ -2,13 +2,97 @@
 
 A demo multi-agent system that uses LangGraph and MCP to implement a travel-planning assistant with a Supervisor, input Guardrails, and Human-In-The-Loop (HITL) approval flows. The project includes a FastAPI frontend, example MCP server, and client helpers to demonstrate how agents, supervisors, and guardrails can be composed into a safe, reviewable planning pipeline.
 
-Key ideas:
-- Multi-agent coordination using LangGraph and MCP
-- Supervisor agent to manage complex workflows
-- Input guardrails to validate user requests
-- Human-in-the-loop approval for generated plans
+## Architecture
 
-Contents
+```text
+                          USER
+                           │
+                           ▼
+                 ┌───────────────────┐
+                 │    FastAPI / UI   │
+                 └─────────┬─────────┘
+                           │
+                           ▼
+                 ┌───────────────────┐
+                 │  INPUT GUARDRAIL  │
+                 │ validation/safety │
+                 └─────────┬─────────┘
+                           │
+                           ▼
+                 ┌───────────────────┐
+                 │    SUPERVISOR     │
+                 │    LangGraph      │
+                 └─────────┬─────────┘
+                           │
+           ┌───────────────┼────────────────┐
+           │               │                │
+           ▼               ▼                ▼
+    Preference Agent   Destination      Constraint
+                       Agent            Agent
+           │               │                │
+           └───────────────┼────────────────┘
+                           ▼
+                 ┌───────────────────┐
+                 │  Research / Data  │
+                 │  Agents via MCP   │
+                 └─────────┬─────────┘
+                           │
+           ┌───────────────┼────────────────┐
+           ▼               ▼                ▼
+        Weather         Transport         Cost
+         MCP               MCP             MCP
+           │               │                │
+           └───────────────┼────────────────┘
+                           ▼
+                 ┌───────────────────┐
+                 │  Recommendation   │
+                 │  / Ranking Agent  │
+                 └─────────┬─────────┘
+                           ▼
+                 ┌───────────────────┐
+                 │ Critical Analysis │
+                 │       Agent       │
+                 └─────────┬─────────┘
+                           ▼
+                 ┌───────────────────┐
+                 │  Itinerary Agent  │
+                 └─────────┬─────────┘
+                           ▼
+                 ┌───────────────────┐
+                 │   Verification    │
+                 │   / Guardrail     │
+                 └─────────┬─────────┘
+                           ▼
+                 ┌───────────────────┐
+                 │       HITL        │
+                 │  User Approval    │
+                 └─────────┬─────────┘
+                           │
+                  ┌────────┴────────┐
+                  ▼                 ▼
+              APPROVED           REVISE
+                  │                 │
+                  ▼                 └──────► Supervisor
+              FINAL PLAN   
+```
+
+### Architecture Pipeline & Core Components
+
+1. **Input Guardrail**: Validates user intent, blocks off-topic queries, malicious prompt injections, and invalid safety requests before execution.
+2. **LangGraph Supervisor**: Orchestrates specialist agents, dynamic routing, shared state, and task synchronization.
+3. **Preference, Destination & Constraint Agents**: Extracts structured preferences (budget, days, interests, travel style), validates hard constraints vs. soft preferences, and generates candidate pools.
+4. **Research / Data Agents via Model Context Protocol (MCP)**:
+   - **Weather MCP**: Real-time forecasts, season suitability, and climate alerts.
+   - **Transport MCP**: Flight schedules, route friction, and transit difficulty.
+   - **Cost MCP**: Budget estimation, daily spend breakdown, and surge risk prediction.
+5. **Recommendation & Multi-Criteria Ranking Agent**: Deterministic scoring engine evaluating candidates across multi-dimensional criteria (Budget Fit, Season Fit, Interest Alignment, Friction Penalty) with score waterfall explainability.
+6. **Critical Analysis Engine**: Evaluates trade-offs, advantages, disadvantages, tourist traps, and the crucial *"Who should NOT visit"* anti-persona assessment.
+7. **Itinerary Agent & Output Guardrails**: Synthesizes verified data into actionable day-by-day itineraries and sanity-checks feasibility.
+8. **Human-In-The-Loop (HITL) Checkpoint**: Pauses execution via LangGraph memory checkpointer for user approval, feedback, or iterative refinement before final plan delivery.
+
+---
+
+## Contents
 - `app.py`: FastAPI web frontend and API endpoints
 - `backend.py`: core agent orchestration / travel-planner logic
 - `mcp_client.py`: client helpers to interact with the MCP server

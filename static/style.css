@@ -1154,3 +1154,444 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   3-Section Navigation Bar & Tab System
+   ========================================================= */
+.section-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  backdrop-filter: blur(16px);
+  padding: 8px 12px;
+  border-radius: 18px;
+  margin-top: 26px;
+  margin-bottom: 26px;
+  overflow-x: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.tab-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.tab-nav-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.tab-nav-btn.active {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.4), rgba(139, 92, 246, 0.4));
+  border-color: rgba(96, 165, 250, 0.6);
+  color: #ffffff;
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.3);
+}
+
+.view-all-btn {
+  margin-left: auto;
+  background: rgba(2, 6, 23, 0.5);
+  border-color: rgba(148, 163, 184, 0.15);
+}
+
+/* =========================================================
+   Section 2: Decision Card & Recommendations Styling
+   ========================================================= */
+.decision-section {
+  margin-top: 10px;
+  margin-bottom: 26px;
+}
+
+.decision-card {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.decision-header {
+  margin-bottom: 24px;
+}
+
+.decision-title-group h2 {
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 6px 0 12px;
+}
+
+.decision-badges {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.confidence-badge {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  color: #93c5fd;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.cost-badge {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fcd34d;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.decision-block {
+  margin-bottom: 24px;
+}
+
+.block-heading {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 12px;
+}
+
+.recs-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recs-list li {
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #cbd5e1;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  border-left: 4px solid #10b981;
+}
+
+.recs-list.cons-list li {
+  border-left-color: #f59e0b;
+}
+
+.anti-persona-box {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.anti-persona-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.anti-persona-content strong {
+  display: block;
+  color: #fca5a5;
+  font-size: 0.92rem;
+  margin-bottom: 4px;
+}
+
+.anti-persona-content p {
+  color: #fecaca;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.alternatives-section {
+  margin-top: 24px;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  padding-top: 20px;
+}
+
+.alternatives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.alternative-card {
+  background: rgba(2, 6, 23, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.alternative-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.alt-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.alt-name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #ffffff;
+}
+
+.alt-cost {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.alt-reason {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.switch-dest-btn {
+  margin-top: 6px;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  color: #c7d2fe;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.switch-dest-btn:hover {
+  background: #6366f1;
+  color: #ffffff;
+  border-color: #6366f1;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+/* =========================================================
+   Live Weather & 5-Day Forecast Widget Styling
+   ========================================================= */
+.weather-widget {
+  grid-column: 1 / -1;
+}
+
+.weather-content-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+@media (max-width: 860px) {
+  .weather-content-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.weather-current-box {
+  background: rgba(2, 6, 23, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.weather-main-stat {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.weather-big-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.weather-main-stat h2 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0;
+}
+
+.weather-main-stat span {
+  color: #93c5fd;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.weather-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  padding-top: 14px;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 0.76rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.metric-item strong {
+  font-size: 0.88rem;
+  color: #f1f5f9;
+  font-weight: 700;
+}
+
+.forecast-strip-wrapper {
+  background: rgba(2, 6, 23, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.forecast-heading {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  margin: 0;
+}
+
+.forecast-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.forecast-day-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 14px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.forecast-day-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.forecast-day-card.today {
+  border-color: #3b82f6;
+  background: rgba(37, 99, 235, 0.15);
+}
+
+.forecast-day-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.forecast-day-card.today .forecast-day-name {
+  color: #60a5fa;
+}
+
+.forecast-day-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.forecast-temps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.temp-max {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.temp-min {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+@media (max-width: 650px) {
+  .forecast-strip {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .forecast-day-card {
+    min-width: 85px;
+  }
+}
+
+.pie-center-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.pie-center-label {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pie-center-amount {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #ffffff;
+}

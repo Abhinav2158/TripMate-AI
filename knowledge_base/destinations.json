@@ -1,0 +1,632 @@
+[
+  {
+    "id": "manali_in",
+    "name": "Manali, Himachal Pradesh",
+    "country": "India",
+    "region": "North India",
+    "category_tags": ["mountains", "adventure", "nature", "snow", "trekking"],
+    "min_days": 4,
+    "ideal_days": 5,
+    "base_cost_per_day_inr": 3500,
+    "cost_uncertainty_range_pct": 0.20,
+    "monthly_suitability": {
+      "January": 0.85, "February": 0.85, "March": 0.90, "April": 0.95, "May": 0.95, "June": 0.90,
+      "July": 0.30, "August": 0.30, "September": 0.80, "October": 0.95, "November": 0.85, "December": 0.90
+    },
+    "monthly_crowd_level": {
+      "January": 0.70, "February": 0.60, "March": 0.65, "April": 0.85, "May": 0.95, "June": 0.95,
+      "July": 0.20, "August": 0.20, "September": 0.50, "October": 0.75, "November": 0.65, "December": 0.90
+    },
+    "nature_score": 0.92,
+    "adventure_score": 0.90,
+    "culture_score": 0.65,
+    "nightlife_score": 0.60,
+    "relaxation_score": 0.75,
+    "accessibility_score": 0.70,
+    "advantages": [
+      "Epic Himalayan landscapes, Solang Valley adventure sports, and scenic Rohtang Pass.",
+      "Vibrant backpacker cafe culture in Old Manali.",
+      "Wide range of budget hostels and boutique riverside stays."
+    ],
+    "disadvantages": [
+      "Mall road and major tourist viewpoints get heavily congested in peak season.",
+      "Long mountain road travel time from Chandigarh or Delhi (10-14 hours)."
+    ],
+    "risks": {
+      "weather_risks": ["Monsoon landslides in July-August; early snowfall can block high passes in late autumn."],
+      "cost_risks": ["Taxi union rates surge up to 2x during May-June and New Year peak."],
+      "tourist_traps": ["Overpriced paragliding/skiing packages sold by unregistered agents at Solang parking."],
+      "transport_difficulty": 0.55,
+      "safety_rating": 0.88,
+      "who_should_not_visit": "Travelers seeking tranquil seclusion without commercial crowds, or elderly individuals sensitive to 12-hour winding mountain road journeys."
+    }
+  },
+  {
+    "id": "sikkim_in",
+    "name": "Gangtok & North Sikkim",
+    "country": "India",
+    "region": "Northeast India",
+    "category_tags": ["mountains", "nature", "culture", "peaceful", "trekking"],
+    "min_days": 5,
+    "ideal_days": 7,
+    "base_cost_per_day_inr": 4200,
+    "cost_uncertainty_range_pct": 0.18,
+    "monthly_suitability": {
+      "January": 0.65, "February": 0.70, "March": 0.90, "April": 0.95, "May": 0.90, "June": 0.40,
+      "July": 0.20, "August": 0.20, "September": 0.75, "October": 0.95, "November": 0.95, "December": 0.75
+    },
+    "monthly_crowd_level": {
+      "January": 0.40, "February": 0.45, "March": 0.60, "April": 0.80, "May": 0.85, "June": 0.35,
+      "July": 0.15, "August": 0.15, "September": 0.45, "October": 0.70, "November": 0.65, "December": 0.50
+    },
+    "nature_score": 0.96,
+    "adventure_score": 0.82,
+    "culture_score": 0.88,
+    "nightlife_score": 0.35,
+    "relaxation_score": 0.88,
+    "accessibility_score": 0.55,
+    "advantages": [
+      "Untouched biodiversity, Kanchenjunga mountain views, and serene Buddhist monasteries.",
+      "Noticeably cleaner, greener, and less commercialized than Western Himalayan hubs.",
+      "Unique high-altitude lakes like Gurudongmar and Tsomgo."
+    ],
+    "disadvantages": [
+      "Requires inner line permits for North Sikkim and Nathu La pass.",
+      "Bagdogra airport to Gangtok transit is 4-5 hours on rugged hill terrain."
+    ],
+    "risks": {
+      "weather_risks": ["Heavy monsoon rains trigger road closures; extreme sub-zero temperatures at Yumthang in winter."],
+      "cost_risks": ["North Sikkim requires private 4x4 vehicle hire which is costly for solo travelers."],
+      "tourist_traps": ["Unofficial permit brokers charging inflated processing fees."],
+      "transport_difficulty": 0.68,
+      "safety_rating": 0.92,
+      "who_should_not_visit": "Nightlife seekers and party-goers, or travelers who cannot handle long rugged drives in shared/private jeeps."
+    }
+  },
+  {
+    "id": "rishikesh_in",
+    "name": "Rishikesh, Uttarakhand",
+    "country": "India",
+    "region": "North India",
+    "category_tags": ["adventure", "spirituality", "yoga", "nature", "budget"],
+    "min_days": 2,
+    "ideal_days": 4,
+    "base_cost_per_day_inr": 2500,
+    "cost_uncertainty_range_pct": 0.15,
+    "monthly_suitability": {
+      "January": 0.75, "February": 0.85, "March": 0.95, "April": 0.90, "May": 0.70, "June": 0.60,
+      "July": 0.30, "August": 0.30, "September": 0.85, "October": 0.95, "November": 0.95, "December": 0.85
+    },
+    "monthly_crowd_level": {
+      "January": 0.55, "February": 0.65, "March": 0.75, "April": 0.80, "May": 0.85, "June": 0.70,
+      "July": 0.40, "August": 0.40, "September": 0.60, "October": 0.75, "November": 0.70, "December": 0.80
+    },
+    "nature_score": 0.82,
+    "adventure_score": 0.94,
+    "culture_score": 0.90,
+    "nightlife_score": 0.45,
+    "relaxation_score": 0.85,
+    "accessibility_score": 0.88,
+    "advantages": [
+      "World-class white water rafting, bungee jumping, and cliff jumping on the holy Ganges.",
+      "Spiritual Ganga Aarti at Parmarth Niketan & Triveni Ghat.",
+      "Highly accessible from Delhi by direct train/expressway (4-5 hours)."
+    ],
+    "disadvantages": [
+      "Strictly vegetarian & dry city; no alcohol permitted near religious riverbanks.",
+      "Heavy weekend traffic bottlenecks along Ram Jhula and Laxman Jhula corridors."
+    ],
+    "risks": {
+      "weather_risks": ["River rafting is closed during July-August monsoon due to high water levels."],
+      "cost_risks": ["Weekend surges at boutique riverside camps."],
+      "tourist_traps": ["Overhyped fake yoga ashrams offering uncertified crash courses."],
+      "transport_difficulty": 0.25,
+      "safety_rating": 0.90,
+      "who_should_not_visit": "Travelers looking for vibrant nightclub culture, alcohol-fueled beach parties, or ultra-luxurious secluded privacy on weekends."
+    }
+  },
+  {
+    "id": "goa_in",
+    "name": "Goa (North & South)",
+    "country": "India",
+    "region": "West Coast India",
+    "category_tags": ["beaches", "nightlife", "relaxation", "seafood", "heritage"],
+    "min_days": 3,
+    "ideal_days": 5,
+    "base_cost_per_day_inr": 3800,
+    "cost_uncertainty_range_pct": 0.22,
+    "monthly_suitability": {
+      "January": 0.95, "February": 0.95, "March": 0.85, "April": 0.70, "May": 0.60, "June": 0.40,
+      "July": 0.45, "August": 0.50, "September": 0.70, "October": 0.85, "November": 0.95, "December": 0.98
+    },
+    "monthly_crowd_level": {
+      "January": 0.90, "February": 0.75, "March": 0.60, "April": 0.50, "May": 0.45, "June": 0.30,
+      "July": 0.25, "August": 0.30, "September": 0.45, "October": 0.70, "November": 0.85, "December": 0.99
+    },
+    "nature_score": 0.78,
+    "adventure_score": 0.70,
+    "culture_score": 0.75,
+    "nightlife_score": 0.98,
+    "relaxation_score": 0.88,
+    "accessibility_score": 0.92,
+    "advantages": [
+      "Premier beach lifestyle, vibrant beach shacks, night markets, and live music.",
+      "Contrasting vibes: High-energy North Goa parties vs. serene, pristine South Goa beaches.",
+      "Excellent Portuguese-Goan cuisine and heritage architecture."
+    ],
+    "disadvantages": [
+      "Aggressive local taxi cartel with high fixed rates; scooter rental is practically essential.",
+      "Baga/Calangute beach strips are heavily commercialized and crowded."
+    ],
+    "risks": {
+      "weather_risks": ["Heavy monsoon sea swells make swimming dangerous from June to September."],
+      "cost_risks": ["December 20 - Jan 5 festive week incurs 300% price hikes on hotels and vehicle rentals."],
+      "tourist_traps": ["Overpriced water sports packages at crowded North Goa beaches."],
+      "transport_difficulty": 0.20,
+      "safety_rating": 0.86,
+      "who_should_not_visit": "Mountain lovers seeking cold climate, or budget travelers visiting during Christmas/New Year peak without advance bookings."
+    }
+  },
+  {
+    "id": "ladakh_in",
+    "name": "Leh & Ladakh",
+    "country": "India",
+    "region": "North India",
+    "category_tags": ["mountains", "adventure", "roadtrip", "biking", "landscape"],
+    "min_days": 6,
+    "ideal_days": 8,
+    "base_cost_per_day_inr": 4800,
+    "cost_uncertainty_range_pct": 0.20,
+    "monthly_suitability": {
+      "January": 0.20, "February": 0.20, "March": 0.30, "April": 0.60, "May": 0.85, "June": 0.95,
+      "July": 0.98, "August": 0.98, "September": 0.90, "October": 0.65, "November": 0.30, "December": 0.20
+    },
+    "monthly_crowd_level": {
+      "January": 0.10, "February": 0.10, "March": 0.20, "April": 0.50, "May": 0.80, "June": 0.95,
+      "July": 0.95, "August": 0.90, "September": 0.70, "October": 0.40, "November": 0.15, "December": 0.10
+    },
+    "nature_score": 0.98,
+    "adventure_score": 0.98,
+    "culture_score": 0.90,
+    "nightlife_score": 0.20,
+    "relaxation_score": 0.70,
+    "accessibility_score": 0.40,
+    "advantages": [
+      "Otherworldly barren moonscapes, Pangong Tso blue waters, and Nubra Valley dunes.",
+      "World's highest motorable mountain passes (Khardung La, Umling La).",
+      "Rich ancient Tibetan Buddhist gompas and monasteries."
+    ],
+    "disadvantages": [
+      "High altitude sickness (AMS) requires mandatory 48-hour rest acclimatization in Leh.",
+      "Extremely cold winter temperatures with sub-zero freezing."
+    ],
+    "risks": {
+      "weather_risks": ["Acute mountain sickness (AMS) can be life-threatening if rushed without acclimatization."],
+      "cost_risks": ["Mandatory local taxi union rules prohibit non-local commercial vehicles in Nubra/Pangong."],
+      "tourist_traps": ["Inferior oxygen concentrator rentals and overpriced souvenir stones."],
+      "transport_difficulty": 0.75,
+      "safety_rating": 0.88,
+      "who_should_not_visit": "Travelers with severe respiratory/cardiovascular issues, or those on short 2-3 day weekend getaways."
+    }
+  },
+  {
+    "id": "varanasi_in",
+    "name": "Varanasi, Uttar Pradesh",
+    "country": "India",
+    "region": "North India",
+    "category_tags": ["culture", "spirituality", "heritage", "photography", "budget"],
+    "min_days": 2,
+    "ideal_days": 3,
+    "base_cost_per_day_inr": 2200,
+    "cost_uncertainty_range_pct": 0.12,
+    "monthly_suitability": {
+      "January": 0.85, "February": 0.90, "March": 0.80, "April": 0.55, "May": 0.40, "June": 0.45,
+      "July": 0.50, "August": 0.55, "September": 0.75, "October": 0.90, "November": 0.95, "December": 0.90
+    },
+    "monthly_crowd_level": {
+      "January": 0.80, "February": 0.75, "March": 0.70, "April": 0.50, "May": 0.40, "June": 0.45,
+      "July": 0.60, "August": 0.65, "September": 0.70, "October": 0.85, "November": 0.95, "December": 0.85
+    },
+    "nature_score": 0.45,
+    "adventure_score": 0.35,
+    "culture_score": 0.99,
+    "nightlife_score": 0.20,
+    "relaxation_score": 0.50,
+    "accessibility_score": 0.90,
+    "advantages": [
+      "Unmatched ancient spiritual heritage and evening Ganga Aarti at Dashashwamedh Ghat.",
+      "Incredible street food culture (kachori, chaat, malaiyo, lassi).",
+      "Very budget-friendly with rich cultural immersion."
+    ],
+    "disadvantages": [
+      "Dense, chaotic alleyways with overwhelming noise, cows, and sensory overload.",
+      "Aggressive souvenir touts and boat price haggling."
+    ],
+    "risks": {
+      "weather_risks": ["Scorching summer heat in May-June exceeding 43°C."],
+      "cost_risks": ["Inflated boat ride quotes for sunrise tours unless negotiated firmly."],
+      "tourist_traps": ["Touts guiding tourists to fake silk saree factory outlets."],
+      "transport_difficulty": 0.30,
+      "safety_rating": 0.82,
+      "who_should_not_visit": "Travelers sensitive to intense sensory overload, noise, crowded alleys, or those seeking modern nightlife and outdoor adventure sports."
+    }
+  },
+  {
+    "id": "jaipur_in",
+    "name": "Jaipur & Udaipur, Rajasthan",
+    "country": "India",
+    "region": "West India",
+    "category_tags": ["heritage", "royalty", "culture", "architecture", "shopping"],
+    "min_days": 3,
+    "ideal_days": 5,
+    "base_cost_per_day_inr": 3400,
+    "cost_uncertainty_range_pct": 0.15,
+    "monthly_suitability": {
+      "January": 0.95, "February": 0.95, "March": 0.80, "April": 0.50, "May": 0.30, "June": 0.35,
+      "July": 0.55, "August": 0.65, "September": 0.80, "October": 0.95, "November": 0.95, "December": 0.95
+    },
+    "monthly_crowd_level": {
+      "January": 0.85, "February": 0.80, "March": 0.65, "April": 0.45, "May": 0.30, "June": 0.35,
+      "July": 0.50, "August": 0.60, "September": 0.70, "October": 0.85, "November": 0.90, "December": 0.95
+    },
+    "nature_score": 0.60,
+    "adventure_score": 0.55,
+    "culture_score": 0.98,
+    "nightlife_score": 0.60,
+    "relaxation_score": 0.80,
+    "accessibility_score": 0.92,
+    "advantages": [
+      "Majestic royal forts (Amer, Nahargarh, City Palace) and Lake Pichola romance in Udaipur.",
+      "World-class artisan handicrafts, jewellery, and textile shopping.",
+      "Lavish heritage havelis and palace hotels across budget levels."
+    ],
+    "disadvantages": [
+      "Extreme dry heat during April to June makes daytime sightseeing exhausting.",
+      "Heavy tourist crowd at Amber Fort during peak morning hours."
+    ],
+    "risks": {
+      "weather_risks": ["Severe summer heat waves during May-June."],
+      "cost_risks": ["Palace entrance tickets and camera fees add up quickly."],
+      "tourist_traps": ["Commission-driven gem and gemstone shops near Johari Bazaar."],
+      "transport_difficulty": 0.20,
+      "safety_rating": 0.89,
+      "who_should_not_visit": "Travelers visiting in summer who cannot tolerate dry desert heat, or those prioritizing lush alpine forests and snow."
+    }
+  },
+  {
+    "id": "kerala_in",
+    "name": "Munnar & Alleppey, Kerala",
+    "country": "India",
+    "region": "South India",
+    "category_tags": ["nature", "relaxation", "backwaters", "tea_gardens", "ayurveda"],
+    "min_days": 4,
+    "ideal_days": 6,
+    "base_cost_per_day_inr": 3600,
+    "cost_uncertainty_range_pct": 0.16,
+    "monthly_suitability": {
+      "January": 0.95, "February": 0.90, "March": 0.80, "April": 0.70, "May": 0.65, "June": 0.50,
+      "July": 0.55, "August": 0.70, "September": 0.85, "October": 0.90, "November": 0.95, "December": 0.95
+    },
+    "monthly_crowd_level": {
+      "January": 0.80, "February": 0.70, "March": 0.55, "April": 0.50, "May": 0.50, "June": 0.35,
+      "July": 0.40, "August": 0.60, "September": 0.65, "October": 0.75, "November": 0.85, "December": 0.95
+    },
+    "nature_score": 0.95,
+    "adventure_score": 0.60,
+    "culture_score": 0.85,
+    "nightlife_score": 0.25,
+    "relaxation_score": 0.98,
+    "accessibility_score": 0.80,
+    "advantages": [
+      "Unrivaled overnight houseboat cruises on peaceful Alleppey backwaters.",
+      "Endless rolling green tea plantations and cool mountain climate in Munnar.",
+      "Authentic Ayurvedic healing spas and fresh coastal culinary traditions."
+    ],
+    "disadvantages": [
+      "Nightlife is practically nonexistent; most towns wind down by 9:00 PM.",
+      "Alleppey to Munnar transfer requires a 4.5-hour winding drive."
+    ],
+    "risks": {
+      "weather_risks": ["Heavy southwest monsoon in June-July can cause local flooding."],
+      "cost_risks": ["Private air-conditioned houseboats have steep minimum pricing."],
+      "tourist_traps": ["Sub-standard day-cruise shikaras posing as luxury houseboats."],
+      "transport_difficulty": 0.35,
+      "safety_rating": 0.94,
+      "who_should_not_visit": "High-octane party seekers, nightclub enthusiasts, or travelers wanting fast-paced urban entertainment."
+    }
+  },
+  {
+    "id": "meghalaya_in",
+    "name": "Shillong & Cherrapunji, Meghalaya",
+    "country": "India",
+    "region": "Northeast India",
+    "category_tags": ["nature", "waterfalls", "trekking", "caves", "eco_tourism"],
+    "min_days": 4,
+    "ideal_days": 6,
+    "base_cost_per_day_inr": 3600,
+    "cost_uncertainty_range_pct": 0.17,
+    "monthly_suitability": {
+      "January": 0.80, "February": 0.85, "March": 0.90, "April": 0.90, "May": 0.85, "June": 0.60,
+      "July": 0.50, "August": 0.55, "September": 0.85, "October": 0.98, "November": 0.98, "December": 0.90
+    },
+    "monthly_crowd_level": {
+      "January": 0.50, "February": 0.45, "March": 0.55, "April": 0.70, "May": 0.80, "June": 0.50,
+      "July": 0.40, "August": 0.45, "September": 0.65, "October": 0.85, "November": 0.80, "December": 0.75
+    },
+    "nature_score": 0.98,
+    "adventure_score": 0.92,
+    "culture_score": 0.82,
+    "nightlife_score": 0.40,
+    "relaxation_score": 0.88,
+    "accessibility_score": 0.60,
+    "advantages": [
+      "Living root bridges in Nongriat and crystal clear waters of Dawki Umngot river.",
+      "Highest waterfalls in India (Nohkalikai, Wei Sawdong) and limestone spelunking caves.",
+      "Rich Khasi indigenous matrilineal culture and indie rock live music in Shillong."
+    ],
+    "disadvantages": [
+      "Double Decker Root Bridge trek involves 3,500 steep concrete steps each way.",
+      "Road visibility can drop to 2 meters due to dense mountain fog in Cherrapunji."
+    ],
+    "risks": {
+      "weather_risks": ["Heaviest rainfall on Earth during June-August, rendering cave exploration dangerous."],
+      "cost_risks": ["Private cabs from Guwahati airport are required as public transit in rural Meghalaya is limited."],
+      "tourist_traps": ["Overcrowded Dawki boating spots near the Bangladesh border during holiday weekends."],
+      "transport_difficulty": 0.55,
+      "safety_rating": 0.95,
+      "who_should_not_visit": "Travelers with severe knee issues or physical limitations unable to hike stairs, or those seeking dry desert warmth."
+    }
+  },
+  {
+    "id": "andaman_in",
+    "name": "Havelock & Neil Island, Andamans",
+    "country": "India",
+    "region": "Islands",
+    "category_tags": ["beaches", "scuba_diving", "nature", "honeymoon", "relaxation"],
+    "min_days": 5,
+    "ideal_days": 7,
+    "base_cost_per_day_inr": 5200,
+    "cost_uncertainty_range_pct": 0.18,
+    "monthly_suitability": {
+      "January": 0.98, "February": 0.98, "March": 0.95, "April": 0.85, "May": 0.40, "June": 0.30,
+      "July": 0.30, "August": 0.35, "September": 0.60, "October": 0.80, "November": 0.92, "December": 0.98
+    },
+    "monthly_crowd_level": {
+      "January": 0.85, "February": 0.75, "March": 0.65, "April": 0.50, "May": 0.30, "June": 0.20,
+      "July": 0.20, "August": 0.25, "September": 0.40, "October": 0.65, "November": 0.80, "December": 0.95
+    },
+    "nature_score": 0.97,
+    "adventure_score": 0.88,
+    "culture_score": 0.60,
+    "nightlife_score": 0.30,
+    "relaxation_score": 0.96,
+    "accessibility_score": 0.50,
+    "advantages": [
+      "Radhanagar Beach rated among Asia's finest pristine turquoise beaches.",
+      "World-class coral reefs, manta rays, and PADI scuba diving centers in Havelock.",
+      "Extremely safe, tranquil, and pristine island ecology."
+    ],
+    "disadvantages": [
+      "Requires domestic flight to Port Blair followed by private Makruzz/Nautika ferry.",
+      "Limited high-speed internet and cellular connectivity across outer islands."
+    ],
+    "risks": {
+      "weather_risks": ["Cyclonic storms and rough sea ferry cancellations during May-July."],
+      "cost_risks": ["Inter-island ferry and water activity charges add significant overhead."],
+      "tourist_traps": ["Overpriced underwater sea walk operators with rushed dive times."],
+      "transport_difficulty": 0.60,
+      "safety_rating": 0.97,
+      "who_should_not_visit": "Travelers prone to severe sea motion sickness or digital nomads requiring constant fiber broadband."
+    }
+  },
+  {
+    "id": "dubai_ae",
+    "name": "Dubai, United Arab Emirates",
+    "country": "United Arab Emirates",
+    "region": "Middle East",
+    "category_tags": ["luxury", "shopping", "modern", "desert", "architecture"],
+    "min_days": 4,
+    "ideal_days": 5,
+    "base_cost_per_day_inr": 12000,
+    "cost_uncertainty_range_pct": 0.20,
+    "monthly_suitability": {
+      "January": 0.98, "February": 0.98, "March": 0.90, "April": 0.75, "May": 0.45, "June": 0.30,
+      "July": 0.25, "August": 0.25, "September": 0.40, "October": 0.75, "November": 0.95, "December": 0.98
+    },
+    "monthly_crowd_level": {
+      "January": 0.95, "February": 0.90, "March": 0.80, "April": 0.60, "May": 0.40, "June": 0.30,
+      "July": 0.25, "August": 0.25, "September": 0.40, "October": 0.70, "November": 0.90, "December": 0.99
+    },
+    "nature_score": 0.50,
+    "adventure_score": 0.80,
+    "culture_score": 0.70,
+    "nightlife_score": 0.95,
+    "relaxation_score": 0.85,
+    "accessibility_score": 0.98,
+    "advantages": [
+      "Ultra-modern infrastructure, Burj Khalifa, Museum of the Future, and luxury malls.",
+      "Exciting desert dune safaris, indoor ski slopes, and world-class theme parks.",
+      "World-renowned international dining and pristine rooftop nightlife."
+    ],
+    "disadvantages": [
+      "Significantly higher overall trip cost than domestic Asian destinations.",
+      "Summer outdoor conditions are oppressively hot and humid (45°C+)."
+    ],
+    "risks": {
+      "weather_risks": ["Dangerous outdoor heat between May and September."],
+      "cost_risks": ["Alcohol and attraction entry tickets (Burj, Parks) carry premium pricing."],
+      "tourist_traps": ["Overpriced fake designer goods in Deira spice souk back-alleys."],
+      "transport_difficulty": 0.10,
+      "safety_rating": 0.99,
+      "who_should_not_visit": "Budget backpackers on strict funds under ₹50,000, or travelers seeking rustic organic mountain trails."
+    }
+  },
+  {
+    "id": "bali_id",
+    "name": "Bali, Indonesia",
+    "country": "Indonesia",
+    "region": "Southeast Asia",
+    "category_tags": ["beaches", "nature", "culture", "relaxation", "adventure"],
+    "min_days": 5,
+    "ideal_days": 7,
+    "base_cost_per_day_inr": 5500,
+    "cost_uncertainty_range_pct": 0.18,
+    "monthly_suitability": {
+      "January": 0.60, "February": 0.60, "March": 0.75, "April": 0.88, "May": 0.95, "June": 0.95,
+      "July": 0.98, "August": 0.98, "September": 0.95, "October": 0.85, "November": 0.70, "December": 0.65
+    },
+    "monthly_crowd_level": {
+      "January": 0.75, "February": 0.60, "March": 0.65, "April": 0.75, "May": 0.80, "June": 0.90,
+      "July": 0.98, "August": 0.98, "September": 0.85, "October": 0.75, "November": 0.65, "December": 0.90
+    },
+    "nature_score": 0.94,
+    "adventure_score": 0.88,
+    "culture_score": 0.92,
+    "nightlife_score": 0.88,
+    "relaxation_score": 0.95,
+    "accessibility_score": 0.82,
+    "advantages": [
+      "Exceptional value for private pool villas and luxury wellness retreats in Ubud.",
+      "Iconic rice terraces, active volcano sunrise treks (Mt Batur), and beach clubs.",
+      "Deep Hindu-Balinese temple culture and surf breaks."
+    ],
+    "disadvantages": [
+      "Severe traffic gridlock around Canggu, Seminyak, and Ubud central roads.",
+      "High humidity and frequent tropical downpours during the wet season (Dec-Feb)."
+    ],
+    "risks": {
+      "weather_risks": ["Tropical monsoon downpours during January-February."],
+      "cost_risks": ["High international flight fares during July-August and December."],
+      "tourist_traps": ["Aggressive money changers offering unrealistic exchange rates."],
+      "transport_difficulty": 0.40,
+      "safety_rating": 0.90,
+      "who_should_not_visit": "Travelers expecting spotless, hassle-free traffic transit or those seeking cool alpine weather."
+    }
+  },
+  {
+    "id": "bangkok_th",
+    "name": "Bangkok & Phuket, Thailand",
+    "country": "Thailand",
+    "region": "Southeast Asia",
+    "category_tags": ["beaches", "nightlife", "street_food", "shopping", "budget"],
+    "min_days": 4,
+    "ideal_days": 6,
+    "base_cost_per_day_inr": 4800,
+    "cost_uncertainty_range_pct": 0.15,
+    "monthly_suitability": {
+      "January": 0.95, "February": 0.95, "March": 0.85, "April": 0.80, "May": 0.60, "June": 0.55,
+      "July": 0.55, "August": 0.50, "September": 0.45, "October": 0.70, "November": 0.90, "December": 0.95
+    },
+    "monthly_crowd_level": {
+      "January": 0.95, "February": 0.90, "March": 0.75, "April": 0.85, "May": 0.50, "June": 0.45,
+      "July": 0.55, "August": 0.55, "September": 0.45, "October": 0.65, "November": 0.85, "December": 0.98
+    },
+    "nature_score": 0.85,
+    "adventure_score": 0.82,
+    "culture_score": 0.88,
+    "nightlife_score": 0.96,
+    "relaxation_score": 0.85,
+    "accessibility_score": 0.92,
+    "advantages": [
+      "World-leading street gastronomy, night markets, and Grand Palace heritage.",
+      "Incredible island hopping in Phuket and Phi Phi with clear turquoise waters.",
+      "Very high value-for-money hospitality and visa-friendly access."
+    ],
+    "disadvantages": [
+      "Bangkok city traffic jams and intense midday humidity.",
+      "Patong beach and Nana Plaza can feel overly chaotic and commercialized."
+    ],
+    "risks": {
+      "weather_risks": ["Heavy monsoon sea swells in Phuket from June to October."],
+      "cost_risks": ["Tuk-tuk scams near tourist temples charging inflated transport prices."],
+      "tourist_traps": ["Gem store and tailor shop detours suggested by 'friendly' tuk-tuk drivers."],
+      "transport_difficulty": 0.22,
+      "safety_rating": 0.88,
+      "who_should_not_visit": "Travelers looking for quiet, meditative mountain silence or strict religious sobriety."
+    }
+  },
+  {
+    "id": "singapore_sg",
+    "name": "Singapore City",
+    "country": "Singapore",
+    "region": "Southeast Asia",
+    "category_tags": ["modern", "family", "gardens", "food", "cleanliness"],
+    "min_days": 3,
+    "ideal_days": 5,
+    "base_cost_per_day_inr": 11000,
+    "cost_uncertainty_range_pct": 0.15,
+    "monthly_suitability": {
+      "January": 0.90, "February": 0.92, "March": 0.92, "April": 0.90, "May": 0.90, "June": 0.90,
+      "July": 0.92, "August": 0.92, "September": 0.90, "October": 0.90, "November": 0.85, "December": 0.88
+    },
+    "monthly_crowd_level": {
+      "January": 0.85, "February": 0.80, "March": 0.75, "April": 0.70, "May": 0.75, "June": 0.85,
+      "July": 0.85, "August": 0.80, "September": 0.85, "October": 0.75, "November": 0.80, "December": 0.95
+    },
+    "nature_score": 0.75,
+    "adventure_score": 0.70,
+    "culture_score": 0.85,
+    "nightlife_score": 0.90,
+    "relaxation_score": 0.88,
+    "accessibility_score": 0.99,
+    "advantages": [
+      "Flawless public MRT transit, Gardens by the Bay, and Marina Bay Sands spectacle.",
+      "UNESCO-recognized hawker center food culture (affordable Michelin-star eats).",
+      "Safest and cleanest global metropolitan destination for families and solo travelers."
+    ],
+    "disadvantages": [
+      "High accommodation and alcohol prices compared to neighboring SE Asian nations.",
+      "Year-round equatorial humidity with brief afternoon thunderstorms."
+    ],
+    "risks": {
+      "weather_risks": ["Frequent short tropical downpours; keep a compact umbrella."],
+      "cost_risks": ["Hotel room rates surge during F1 Grand Prix weekend (September)."],
+      "tourist_traps": ["Overpriced dining along tourist-heavy riverside promenades."],
+      "transport_difficulty": 0.05,
+      "safety_rating": 0.99,
+      "who_should_not_visit": "Budget travelers with less than ₹60k total funds or seekers of wild, untamed off-road terrain."
+    }
+  },
+  {
+    "id": "japan_jp",
+    "name": "Tokyo & Kyoto, Japan",
+    "country": "Japan",
+    "region": "East Asia",
+    "category_tags": ["culture", "technology", "food", "heritage", "anime"],
+    "min_days": 6,
+    "ideal_days": 9,
+    "base_cost_per_day_inr": 13500,
+    "cost_uncertainty_range_pct": 0.16,
+    "monthly_suitability": {
+      "January": 0.75, "February": 0.80, "March": 0.95, "April": 0.98, "May": 0.95, "June": 0.70,
+      "July": 0.65, "August": 0.65, "September": 0.75, "October": 0.95, "November": 0.98, "December": 0.85
+    },
+    "monthly_crowd_level": {
+      "January": 0.60, "February": 0.65, "March": 0.95, "April": 0.99, "May": 0.85, "June": 0.60,
+      "July": 0.75, "August": 0.75, "September": 0.70, "October": 0.90, "November": 0.95, "December": 0.80
+    },
+    "nature_score": 0.88,
+    "adventure_score": 0.75,
+    "culture_score": 0.99,
+    "nightlife_score": 0.92,
+    "relaxation_score": 0.90,
+    "accessibility_score": 0.98,
+    "advantages": [
+      "Unmatched juxtaposition of futuristic Tokyo neon with timeless Kyoto Shinto shrines.",
+      "World-class Shinkansen bullet train network and culinary artistry (ramen, sushi, kaiseki).",
+      "Cherry blossom (Sakura) in spring and maple foliage (Koyo) in autumn."
+    ],
+    "disadvantages": [
+      "Language barriers in smaller establishments outside major transit hubs.",
+      "High accommodation rates during peak Sakura week (late March - early April)."
+    ],
+    "risks": {
+      "weather_risks": ["Typhoon season during late August to September."],
+      "cost_risks": ["Shinkansen tickets and fine dining require substantial advance budget allocation."],
+      "tourist_traps": ["Overcrowded photo spots in Kyoto (Gion, Fushimi Inari) between 10am-4pm."],
+      "transport_difficulty": 0.15,
+      "safety_rating": 0.99,
+      "who_should_not_visit": "Travelers expecting quick English negotiation everywhere or looking for an unstructured, spontaneous tropical beach vacation."
+    }
+  }
+]
