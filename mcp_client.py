@@ -425,26 +425,26 @@ async def forecast_mcp_search(city: str):
 # =========================================================
 
 async def extract_destination(query: str) -> str:
-    prompt = f"""
-Extract only the destination city or country from the travel request.
+    cleaned = query.strip()
+    if not cleaned:
+        return "New Delhi"
+    
+    # If already a simple city/region name (e.g. "Rishikesh, Uttarakhand" or "Jaipur"), parse instantly
+    if len(cleaned.split()) <= 4:
+        return cleaned.split(",")[0].strip()
 
-Travel request:
-{query}
+    import re
+    # Extract with regex first
+    m = re.search(r'\b(?:to|in|for|explore|visit)\s+([A-Za-z\s]{3,25}?)(?:\s+(?:from|for|with|under|budget|\d)|$|[.,!?])', cleaned, re.I)
+    if m and len(m.group(1).strip()) > 2:
+        return m.group(1).strip()
 
-Return only the destination name.
-Do not add any explanation.
-"""
-
-    response = await llm.ainvoke(prompt)
-
-    destination = str(
-        response.content
-    ).strip()
-
-    if not destination:
-        destination = "Travel Destination"
-
-    return destination
+    try:
+        response = await llm.ainvoke(f"Extract only the destination city or country from: '{cleaned}'. Return only the name.")
+        destination = str(response.content).strip()
+        return destination.split("\n")[0].strip() or cleaned.split(",")[0].strip()
+    except Exception:
+        return cleaned.split(",")[0].strip()
 
 
 # =========================================================
