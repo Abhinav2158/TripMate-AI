@@ -143,6 +143,14 @@ class DynamicDestinationDossier(BaseModel):
     disadvantages: List[str] = Field(default_factory=list, description="Top 1-2 genuine drawbacks")
     who_should_not_visit: str = Field(default="", description="Direct warning for who should avoid this place")
 
+    @classmethod
+    def model_validate(cls, obj: Any, *args, **kwargs):
+        if isinstance(obj, dict):
+            for k in ["advantages", "disadvantages", "category_tags"]:
+                if k in obj and isinstance(obj[k], str):
+                    obj[k] = [s.strip() for s in obj[k].split(",") if s.strip()] or [obj[k]]
+        return super().model_validate(obj, *args, **kwargs)
+
 
 class DynamicDiscoveryResult(BaseModel):
     target_destination: Optional[DynamicDestinationDossier] = None

@@ -116,94 +116,110 @@ def _empty_constraints() -> dict[str, Any]:
 
 
 async def fetch_web_scraped_alternative_candidates(explicit: str, days: int, budget: float, query: str) -> List[Dict[str, Any]]:
-    exp_name = (explicit or query).strip()
+    exp_name = (explicit or "").strip()
     daily_budget = max(1200.0, budget / max(1, days))
 
-    search_query = f"top places to visit near {exp_name} or alternative travel spots budget travel"
+    if exp_name and exp_name.lower() not in ["target destination", "destination"]:
+        search_query = f"top places to visit near {exp_name} or alternative travel spots budget travel"
+    else:
+        search_query = f"best travel destinations for {query} top spots India international"
+
     web_text = ""
     try:
         web_text = await tavily_mcp_search(search_query)
-        logger.info(f"Live web search via Serper & Tavily for alternative spots: {search_query[:50]}...")
+        logger.info(f"Live web search via Serper & Tavily for alternative spots: {search_query[:60]}...")
     except Exception as e:
         logger.warning(f"Web search for alternatives error: {e}")
 
     # Use LLM to extract 2 distinct, real alternative destinations from live web search results
     prompt = f"""
-    Destination Query: "{exp_name}"
+    Travel Query / Theme: "{query}"
+    Target (if specified): "{exp_name or 'Find best matching places'}"
     User Budget: ₹{int(budget):,}, Duration: {days} days
-    Live Web Search Results (Google Serper / Tavily):
+    Live Web Search Results:
     {str(web_text)[:1200]}
 
-    Based on the live web search results, suggest 2 distinct, real alternative travel spots near or similar to {exp_name}.
-    Do NOT suggest {exp_name} itself.
-    Return 2 items with: name, country, 2-3 genuine advantages, 1 disadvantage, and who_should_not_visit.
+    Based on the web search results, suggest 2 distinct, REAL geographic travel destinations (e.g., 'Udaipur, Rajasthan', 'Munnar, Kerala', 'Manali, Himachal Pradesh', 'Goa', etc.).
+    Do NOT return generic placeholder text or repeat the target.
+    Return 2 items with: name, country, region, 2-3 genuine advantages, 1-2 disadvantages, and who_should_not_visit.
     """
 
     try:
         disc_llm = llm.with_structured_output(DynamicDiscoveryResult)
         res: DynamicDiscoveryResult = await disc_llm.ainvoke([
-            SystemMessage(content="You are a travel research engine extracting 2 real alternative spots from live web search results."),
+            SystemMessage(content="You are a travel research engine extracting 2 real alternative destinations (with actual geographic city/state names) from live web search results."),
             HumanMessage(content=prompt)
         ])
         results = []
         for d in (res.candidate_destinations or []):
             m = d.model_dump()
-            if m.get("name") and exp_name.lower() not in m.get("name", "").lower():
+            if m.get("name") and (not exp_name or exp_name.lower() not in m.get("name", "").lower()):
                 results.append(m)
         if len(results) >= 2:
             return results[:2]
     except Exception as exc:
         logger.warning(f"Structured web alternative parsing fallback: {exc}")
 
-    # Pure dynamic fallback parsing from web text without hardcoded dictionaries
+    # Dynamic fallback parsing from web text
     import re
     found = re.findall(r'(?:Alternative|Option|\d\.)\s*:?\s*\*?\*?([A-Za-z\s]{3,30}?)\*?\*?(?:\n|-|\(|:|$)', str(web_text))
     dynamic_alts = []
     for i, fname in enumerate(found[:2]):
         cname = fname.strip()
-        if cname and len(cname) > 3 and cname.lower() not in ["budget", "trip", "destination", exp_name.lower()]:
+        if cname and len(cname) > 3 and cname.lower() not in ["budget", "trip", "destination", "target destination", exp_name.lower()]:
             dynamic_alts.append({
                 "id": f"web_alt_{i}_{cname.lower().replace(' ', '_')}",
                 "name": cname,
-                "country": "India" if any(k in query.lower() for k in ["delhi", "mumbai", "kerala", "himachal", "goa", "jaipur", "varanasi", "rishikesh"]) else "Global",
+                "country": "India" if any(k in query.lower() for k in ["delhi", "mumbai", "kerala", "himachal", "goa", "jaipur", "varanasi", "rishikesh", "india"]) else "Global",
                 "region": "",
                 "min_days": days,
                 "base_cost_per_day_inr": daily_budget * 0.88,
                 "category_tags": ["web_scraped_alternative"],
-                "advantages": [f"Web-scraped alternative near {exp_name.title()}", "Budget-friendly accommodation rates"],
-                "disadvantages": ["Requires local transit planning"],
+                "advantages": [f"Popular spot matching {query[:30]}", "Rich sightseeing and dining options"],
+                "disadvantages": ["Requires booking transit in advance"],
                 "who_should_not_visit": "Travelers with tight 1-day schedules"
             })
 
     if len(dynamic_alts) >= 2:
         return dynamic_alts[:2]
 
-    # Zero hardcoding: return dynamic names based on requested destination area
+    # Contextual fallbacks based on query theme
+    q_low = query.lower()
+    if any(w in q_low for w in ["honeymoon", "romantic", "couple"]):
+        fallback_spots = [
+            {"name": "Udaipur, Rajasthan", "country": "India", "region": "Rajasthan", "adv": ["Romantic lake palaces & sunset boat rides", "Heritage boutique stays"]},
+            {"name": "Munnar, Kerala", "country": "India", "region": "Kerala", "adv": ["Misty tea gardens & cool climate", "Tranquil hillside resorts"]}
+        ]
+    elif any(w in q_low for w in ["beach", "sea", "coastal", "surf"]):
+        fallback_spots = [
+            {"name": "Goa", "country": "India", "region": "Goa", "adv": ["Scenic beaches, watersports & cafe culture", "Wide range of seaside stays"]},
+            {"name": "Gokarna, Karnataka", "country": "India", "region": "Karnataka", "adv": ["Pristine secluded beaches", "Laid-back coastal trekking"]}
+        ]
+    elif any(w in q_low for w in ["trek", "mountain", "adventure", "snow", "hiking", "nature"]):
+        fallback_spots = [
+            {"name": "Manali, Himachal Pradesh", "country": "India", "region": "Himachal Pradesh", "adv": ["Himalayan vistas & adventure sports", "Vibrant Old Manali cafes"]},
+            {"name": "Rishikesh, Uttarakhand", "country": "India", "region": "Uttarakhand", "adv": ["River rafting, camping & yoga", "Easy transit connectivity"]}
+        ]
+    else:
+        fallback_spots = [
+            {"name": "Jaipur, Rajasthan", "country": "India", "region": "Rajasthan", "adv": ["Iconic royal forts & vibrant bazaars", "World-renowned Rajasthani cuisine"]},
+            {"name": "Varanasi, Uttar Pradesh", "country": "India", "region": "Uttar Pradesh", "adv": ["Spiritual Ganga Aarti & historic ghats", "Rich cultural immersion"]}
+        ]
+
     return [
         {
-            "id": f"alt1_{exp_name.lower().replace(' ', '_')}",
-            "name": f"Scenic Alternative near {exp_name.title()}",
-            "country": "India" if "india" in query.lower() else "Global",
-            "region": "",
-            "min_days": days,
-            "base_cost_per_day_inr": daily_budget * 0.85,
-            "category_tags": ["scenic_alternative"],
-            "advantages": [f"Lower stay costs than {exp_name.title()}", "Less crowded local spots"],
-            "disadvantages": ["Fewer direct transit options"],
-            "who_should_not_visit": "Travelers strictly set on a single landmark"
-        },
-        {
-            "id": f"alt2_{exp_name.lower().replace(' ', '_')}",
-            "name": f"Heritage Alternative near {exp_name.title()}",
-            "country": "India" if "india" in query.lower() else "Global",
-            "region": "",
+            "id": f"alt_{i}_{spot['name'].lower().replace(' ', '_').replace(',', '')}",
+            "name": spot["name"],
+            "country": spot["country"],
+            "region": spot["region"],
             "min_days": days,
             "base_cost_per_day_inr": daily_budget * 0.90,
-            "category_tags": ["heritage_alternative"],
-            "advantages": ["Unique local food and culture", "Boutique hostel options"],
-            "disadvantages": ["Slightly higher local auto fares"],
-            "who_should_not_visit": "Travelers with 1-day schedules"
+            "category_tags": ["recommended_alternative"],
+            "advantages": spot["adv"],
+            "disadvantages": ["Popular tourist destination with peak season surges"],
+            "who_should_not_visit": "Travelers looking for completely unmapped wilderness"
         }
+        for i, spot in enumerate(fallback_spots)
     ]
 
 
@@ -308,7 +324,7 @@ async def dynamic_discover_candidates(profile: UserProfile, query: str) -> List[
 
     # ALWAYS append 2 alternative candidates if fewer than 3 candidates exist
     if len(candidates) < 3:
-        target_name = explicit or (candidates[0].get("name") if candidates else "Target Destination")
+        target_name = explicit or (candidates[0].get("name") if candidates else query)
         alts = await fetch_web_scraped_alternative_candidates(target_name, days, budget, query)
         for alt in alts:
             if not any(alt["id"] == c.get("id") for c in candidates):
