@@ -50,14 +50,23 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(na
 logger = logging.getLogger("TripMateBackend")
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 if not GROQ_API_KEY:
     logger.warning("GROQ_API_KEY is missing from environment. API calls will fail unless configured.")
 
-llm = ChatGroq(
+# Multi-model resiliency: Primary 120b + Fallback 20b
+_primary_llm = ChatGroq(
     model=GROQ_MODEL,
     api_key=GROQ_API_KEY or "dummy-key",
+    temperature=0.3,
 )
+_backup_model = "openai/gpt-oss-20b" if GROQ_MODEL != "openai/gpt-oss-20b" else "openai/gpt-oss-120b"
+_fallback_llm = ChatGroq(
+    model=_backup_model,
+    api_key=GROQ_API_KEY or "dummy-key",
+    temperature=0.3,
+)
+llm = _primary_llm.with_fallbacks([_fallback_llm])
 
 
 # =========================
